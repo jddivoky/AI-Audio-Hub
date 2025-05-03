@@ -1,0 +1,64 @@
+# This workflow builds and deploys your Next.js app to Firebase Hosting
+# on pushes to the main branch and on pull requests to the main branch.
+
+name: Deploy to Firebase Hosting
+
+on:
+  push:
+    branches:
+      - main # Replace with your main branch name if it's different (e.g., master)
+  pull_request:
+    branches:
+      - main # Replace with your main branch name if it's different (e.g., master)
+
+jobs:
+  build_and_preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # Checks out your repository
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a Node.js version compatible with your Next.js project
+          cache: 'npm' # Cache npm dependencies for faster builds
+      - name: Install dependencies
+        run: npm install # Installs your project dependencies
+      - name: Build Next.js app
+        run: npm run build # Runs the build command for your Next.js app (adjust if different)
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}' # Token automatically provided by GitHub Actions
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' # Secret you will add in GitHub
+          projectId: 'ai-audio-hub' # Replace with your Firebase project ID
+          channelId: 'preview' # Deploys to a preview channel for pull requests
+          # If you want to deploy directly to the live site on push to main,
+          # you can remove the 'channelId' line and add 'target: your-hosting-target'
+          # if you have multiple hosting sites in your project.
+          # For pushes to main, you might want a separate job or conditional logic
+          # to deploy to the live site instead of a preview channel.
+          # For simplicity, this example deploys previews for both PRs and pushes to main.
+          # You can adjust the workflow file later for different deployment behaviors.
+
+  deploy_live:
+    # This job deploys to the live site only on pushes to the main branch
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build_and_preview # Ensure the build job completes successfully first
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build Next.js app
+        run: npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          projectId: 'ai-audio-hub' # Replace with your Firebase project ID
+          # No channelId here, so it deploys to the live site
+          # Add 'target: your-hosting-target' if you have multiple sites
