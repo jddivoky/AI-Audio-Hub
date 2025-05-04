@@ -8,5 +8,8 @@ You can make free accounts right now, and later there will be a paid feature.
 ------------------------------
 
 # Updates/Issues
+> Having issues with pushing to Github, but the accounts feature should be working now. This should not affect the website itself, just the Github Repo.
+>   (5/4/2025, 4:12pm)
+
 > There are currently issues with logging in and signing up.
 >   (5/3/2025, 9:25pm)
