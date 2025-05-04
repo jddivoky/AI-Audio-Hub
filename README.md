@@ -9,4 +9,4 @@ You can make free accounts right now, and later there will be a paid feature.
 
 # Updates/Issues
 > There are currently issues with logging in and signing up.
->   5/3/2025, 9:25pm
+>   (5/3/2025, 9:25pm)
